@@ -1,9 +1,9 @@
 [submodule "Chombo-3.3"]
 	path = Submodules/Chombo-3.3
-	url = https://github.com/chombo-discharge/Chombo-3.3
+	url = https://github.com/drhansj/Chombo-3.3
 [submodule "json"]
 	path = Submodules/json
 	url = https://github.com/nlohmann/json
 [submodule "Submodules/EBGeometry"]
 	path = Submodules/EBGeometry
-	url = https://github.com/rmrsk/ebgeometry
+	url = https://github.com/drhansj/ebgeometry
