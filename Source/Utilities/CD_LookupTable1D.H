@@ -25,7 +25,7 @@
   @brief Class for interpolation of f = f(x) data in one independent variable x.
   @details N is the number of additional dependent variables. T must be a floating point type (e.g., float, double)
 */
-template <typename T = Real, size_t N = 1, typename I = std::enable_if_t<std::is_floating_point<T>::value>>
+template <typename T = Real, size_t N = 1, typename I = std::enable_if<std::is_floating_point<T>::value>>
 class LookupTable1D
 {
 public:
