@@ -11,6 +11,7 @@ echo "compiling with options $COMPILE_OPTIONS"
 
 module unload hdf5;
 module load hdf5/parallel;
+\rm *.ex
 cd $CHOMBO_HOME                                     ; make -j32 $OPT_SETTING $DEB_SETTING $DIM_SETTING $MPI_SETTING lib
 cd $DISCHARGE_HOME                                  ; make -j32 $OPT_SETTING $DEB_SETTING $DIM_SETTING $MPI_SETTING 
 cd $DISCHARGE_HOME/Exec/Tests/Electrostatics/Profile; make -j32 $OPT_SETTING $DEB_SETTING $DIM_SETTING $MPI_SETTING

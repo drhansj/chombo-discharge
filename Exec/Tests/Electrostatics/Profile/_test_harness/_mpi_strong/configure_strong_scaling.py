@@ -60,6 +60,10 @@ if not os.path.exists(top_directory):
     print (printstr)
     os.mkdir(top_directory)
 all_exec_dir_name = top_directory + "/_executable_files"
+if not os.path.exists(all_exec_dir_name):
+    printstr = "making directory " + all_exec_dir_name
+    print (printstr)
+    os.mkdir(all_exec_dir_name)
 batch_template = home_str + "/" + args.batch
 run_all_file_name = top_directory + "/run_all.sh"
 f_run_all       = open( run_all_file_name,'w')
