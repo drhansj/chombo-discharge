@@ -137,12 +137,15 @@ while i_dim <= 3:
             print("creating batch file " + batch_file_name  + " from " + batch_template)
             f_batch = open(batch_file_name, 'w')
             for batchster in f_batch_template:
+                print("batchster = " + batchster)
                 t1str = batchster;
                 t2str = t1str.replace("NUM_NODE", str(i_num_proc))
                 t3str = t2str.replace("EXECUTABLE_FILE", "main.exe")
                 t4str = t3str.replace("INPUT_FILE", input_root)
+                print("t4str = " + t4str)
                 f_batch.write(t4str)
             f_batch.close()
+
             input_file_name = mpi_directory + "/" +  input_root
             print("creating input file " + input_file_name  + " from " + input_template)
             f_input = open(input_file_name, 'w')
@@ -152,6 +155,8 @@ while i_dim <= 3:
                 f_input.write(t2str)
             f_input.close()
 
+            exit()
+            
             batch_command = "\n pushd " +  mpi_directory + "; source " + batch_root + "; popd \n"
             if(args.sbatch_instead_of_source):
                 batch_command = "\n pushd " +  mpi_directory + "; sbatch " + batch_root + "; popd \n"
