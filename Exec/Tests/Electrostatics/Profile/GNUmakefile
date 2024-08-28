@@ -16,3 +16,12 @@ dependencies:
 # Make advection-diffusion headers and library visible. 
 XTRACPPFLAGS += $(ELECTROSTATICS_INCLUDE)
 XTRALIBFLAGS += $(addprefix -l, $(ELECTROSTATICS_LIB))$(config)
+
+pristine:
+	make realclean
+	cd $(CHOMBO_HOME); make realclean
+
+main:
+	make realclean
+	make -j32 all
+	mv $(ebase)*.ex main.exe
