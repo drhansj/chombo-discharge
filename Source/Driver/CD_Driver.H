@@ -109,6 +109,10 @@ protected:
   */
   RefCountedPtr<TimeStepper> m_timeStepper;
 
+  ///whether to confine EBGrid to what Tagger says
+  int m_sendEBGrids;
+
+  
   /*!
     @brief Cell tagger
   */

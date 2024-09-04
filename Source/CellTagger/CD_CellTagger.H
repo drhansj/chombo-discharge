@@ -57,7 +57,7 @@ public:
   /*!
     @brief Parse class options.
     @note This function is called by Driver. 
-  */
+o  */
   virtual void
   parseOptions() = 0;
 

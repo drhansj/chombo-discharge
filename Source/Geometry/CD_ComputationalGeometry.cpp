@@ -154,7 +154,9 @@ ComputationalGeometry::buildGeometries(const ProblemDomain a_finestDomain,
                                        const Real          a_finestDx,
                                        const int           a_nCellMax,
                                        const int           a_maxGhostEB,
-                                       const int           a_maxCoarsen)
+                                       const int           a_maxCoarsen,
+                                       int  a_use_eb_tags,
+                                       RefCountedPtr<Vector< DenseIntVectSet> >* a_tags_ptr)
 {
   CH_TIME("ComputationalGeometry::buildGeometries(ProblemDomain, RealVect, Real, int, int, int)");
 

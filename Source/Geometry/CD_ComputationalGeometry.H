@@ -142,7 +142,10 @@ public:
                   const Real          a_finestDx,
                   const int           a_nCellMax,
                   const int           a_maxGhostEB,
-                  const int           a_maxCoarsen = -1);
+                  const int           a_maxCoarsen = -1,
+                  const int           a_use_eb_tags= 0,
+                  RefCountedPtr<Vector< DenseIntVectSet> >* a_tags_ptr = NULL)
+                  );
 
 protected:
   /*!

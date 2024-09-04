@@ -1084,6 +1084,8 @@ Driver::parseOptions()
     pout() << "Driver::parseOptions()" << endl;
   }
 
+  m_sendEBGrids = 0;
+  pp.query("send_eb_grids", m_sendEBGrids);
   pp.get("regrid_interval", m_regridInterval);
   pp.get("initial_regrids", m_initialRegrids);
   pp.get("restart", m_restartStep);
@@ -1530,13 +1532,25 @@ Driver::setupFresh(const int a_initialRegrids)
   }
 
   const int numCoarsenings = m_doCoarsening ? -1 : m_amr->getMaxAmrDepth();
+  EBAMRTags* input_tags_ptr = NULL;
+  if(m_sendEBGrids == 1)
+  {
+    input_tags_ptr = new EBAMRTags();
+    m_cellTagger->tagCells(*input_tags_ptr);
+  }
   m_computationalGeometry->buildGeometries(m_amr->getFinestDomain(),
                                            m_amr->getProbLo(),
                                            m_amr->getFinestDx(),
                                            m_amr->getMaxEbisBoxSize(),
                                            m_amr->getNumberOfEbGhostCells(),
-                                           numCoarsenings);
+                                           numCoarsenings,
+                                           m_sendEBGrids, inputs_tags_ptr);
 
+  if(m_sendEBGrids == 1)
+  {
+    delete input_tags_ptr;
+    input_tags_ptr = NULL;
+  }
   // Register Realms
   m_timeStepper->setAmr(m_amr);
   m_timeStepper->registerRealms();

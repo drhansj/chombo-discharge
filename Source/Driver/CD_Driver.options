@@ -31,3 +31,4 @@ Driver.grow_geo_tags                   = 2                # How much to grow tag
 Driver.refine_angles                   = 15.              # Refine cells if angle between elements exceed this value.
 Driver.refine_electrodes               = 0                # Refine electrode surfaces. -1 => equal to refine_geometry
 Driver.refine_dielectrics              = 0                # Refine dielectric surfaces. -1 => equal to refine_geometry
+Driver.sendEBGrids                     = 0
