@@ -239,6 +239,12 @@ namespace Physics {
       void
       setSigma(const std::function<Real(const RealVect& a_pos)>& a_sigma) noexcept;
 
+      RefCountedPtr<FieldSolver>
+      getSolver()
+        {
+        return m_fieldSolver;
+        }
+
     protected:
       /*!
 	@brief If true, the simulation will be introspectively load balanced. 
