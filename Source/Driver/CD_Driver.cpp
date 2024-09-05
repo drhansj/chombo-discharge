@@ -42,14 +42,20 @@
 Driver::Driver(const RefCountedPtr<ComputationalGeometry>& a_computationalGeometry,
                const RefCountedPtr<TimeStepper>&           a_timeStepper,
                const RefCountedPtr<AmrMesh>&               a_amr,
-               const RefCountedPtr<CellTagger>&            a_cellTagger,
-               const RefCountedPtr<GeoCoarsener>&          a_geoCoarsen)
+               const RefCountedPtr<GeoCoarsener>&          a_geoCoarsen,
+               RefCountedPtr<CellTagger>                   a_cellTagger,
+               Vector<IntVectSet>*                         a_tags_level)
 {
   CH_TIME(
     "Driver::Driver(RefCPtr<ComputationalGeometry>, RefCPtr<TimeStepper>, RefCPtr<AmrMesh>, RefCPtr<CellTagger>, RefCPtr<GeoCoarsener>)");
 
-  m_verbosity = -1;
-
+  m_verbosity  = -1;
+  m_tags_level = Vector<IntVectSet>();
+  if(a_tags_level != NULL)
+  {
+    m_tags_level = *a_tags_level;
+  }
+    
   this->setComputationalGeometry(a_computationalGeometry); // Set computational geometry
   this->setTimeStepper(a_timeStepper);                     // Set time stepper
   this->setAmr(a_amr);                                     // Set amr
@@ -1532,11 +1538,11 @@ Driver::setupFresh(const int a_initialRegrids)
   }
 
   const int numCoarsenings = m_doCoarsening ? -1 : m_amr->getMaxAmrDepth();
-  EBAMRTags* input_tags_ptr = NULL;
+
+  Vector<IntVectSet>*  input_tags_ptr = NULL;
   if(m_sendEBGrids == 1)
   {
-    input_tags_ptr = new EBAMRTags();
-    m_cellTagger->tagCells(*input_tags_ptr);
+    input_tags_ptr = &m_tags_level;
   }
   m_computationalGeometry->buildGeometries(m_amr->getFinestDomain(),
                                            m_amr->getProbLo(),
@@ -1544,13 +1550,9 @@ Driver::setupFresh(const int a_initialRegrids)
                                            m_amr->getMaxEbisBoxSize(),
                                            m_amr->getNumberOfEbGhostCells(),
                                            numCoarsenings,
-                                           m_sendEBGrids, inputs_tags_ptr);
+                                           m_sendEBGrids, input_tags_ptr);
 
-  if(m_sendEBGrids == 1)
-  {
-    delete input_tags_ptr;
-    input_tags_ptr = NULL;
-  }
+
   // Register Realms
   m_timeStepper->setAmr(m_amr);
   m_timeStepper->registerRealms();

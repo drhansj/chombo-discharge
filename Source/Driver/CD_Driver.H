@@ -51,8 +51,9 @@ public:
   Driver(const RefCountedPtr<ComputationalGeometry>& a_computationalGeometry,
          const RefCountedPtr<TimeStepper>&           a_timeStepper,
          const RefCountedPtr<AmrMesh>&               a_amr,
-         const RefCountedPtr<CellTagger>&            a_cellTagger = RefCountedPtr<CellTagger>(nullptr),
-         const RefCountedPtr<GeoCoarsener>&          a_geoCoarsen = RefCountedPtr<GeoCoarsener>(nullptr));
+         const RefCountedPtr<GeoCoarsener>&          a_geoCoarsen = RefCountedPtr<GeoCoarsener>(nullptr),
+         RefCountedPtr<CellTagger>                   a_cellTagger = RefCountedPtr<CellTagger>(nullptr),
+         Vector<IntVectSet>*                         a_tags_level = NULL);
 
   /*!
     @brief Destructor (does nothing)
@@ -89,6 +90,7 @@ public:
         const std::string a_restartFile);
 
 protected:
+  Vector<IntVectSet>     m_tags_level;
   /*!
     @brief Index space
   */

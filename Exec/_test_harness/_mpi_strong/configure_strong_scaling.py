@@ -101,7 +101,7 @@ batch_root = "batch_4586.sh"
 input_root = "4586.inputs"
 
 #This is just an ordered list of directory/input file/prefix/dim combinations
-i_num_example = 4
+i_num_example = 1
 i_cur_example = 0
 while (i_cur_example < i_num_example):
 

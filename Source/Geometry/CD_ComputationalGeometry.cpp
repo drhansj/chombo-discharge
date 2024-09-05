@@ -149,14 +149,14 @@ ComputationalGeometry::setGasPermittivity(const Real a_eps0)
 }
 
 void
-ComputationalGeometry::buildGeometries(const ProblemDomain a_finestDomain,
-                                       const RealVect      a_probLo,
-                                       const Real          a_finestDx,
-                                       const int           a_nCellMax,
-                                       const int           a_maxGhostEB,
-                                       const int           a_maxCoarsen,
-                                       int  a_use_eb_tags,
-                                       RefCountedPtr<Vector< DenseIntVectSet> >* a_tags_ptr)
+ComputationalGeometry::buildGeometries(const ProblemDomain   a_finestDomain,
+                                       const RealVect        a_probLo,
+                                       const Real            a_finestDx,
+                                       const int             a_nCellMax,
+                                       const int             a_maxGhostEB,
+                                       const int             a_maxCoarsen,
+                                       int                   a_use_eb_tags,
+                                       Vector< IntVectSet >* a_tags_ptr)
 {
   CH_TIME("ComputationalGeometry::buildGeometries(ProblemDomain, RealVect, Real, int, int, int)");
 
