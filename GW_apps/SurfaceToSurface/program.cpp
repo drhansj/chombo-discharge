@@ -44,11 +44,11 @@ int main(int argc, char* argv[]){
   //engine->setupAndRun(input_file);
 
   int initialRegrids, restartStep;
-  pp.get("initial_regrids", initialRegrids);
-  pp.get("restart", restartStep);
+  pp.get("Driver.initial_regrids", initialRegrids);
+  pp.get("Driver.restart", restartStep);
   std::string outputDirectory, outputFileNames;
-  pp.get("output_directory", outputDirectory);
-  pp.get("output_names", outputFileNames);
+  pp.get("Driver.output_directory", outputDirectory);
+  pp.get("Driver.output_names", outputFileNames);
   char iter_str[100];
   sprintf(iter_str, ".check%07d.%dd.hdf5", 0, SpaceDim);
   const std::string restartFile = outputDirectory + "/chk/" + outputFileNames + std::string(iter_str);
@@ -67,10 +67,12 @@ int main(int argc, char* argv[]){
 
   int maxSteps;
   Real startTime, stopTime;
-  pp.get("max_steps", maxSteps);
-  pp.get("start_time", startTime);
-  pp.get("stop_time", stopTime);
+  pp.get("Driver.max_steps", maxSteps);
+  pp.get("Driver.start_time", startTime);
+  pp.get("Driver.stop_time", stopTime);
+  /*
   engine->run(startTime, stopTime, maxSteps);
+  */
 
 #ifdef CH_MPI
   CH_TIMER_REPORT();
