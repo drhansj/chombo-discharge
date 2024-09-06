@@ -20,30 +20,8 @@
 #include <CD_EBGeometryIF.H>
 #include <CD_NamespaceHeader.H>
 
-#if 0
-
-  std::string filename;
-  Real        zCoord;
-  bool        flipInside;
-
-  // Get input options.
-  ParmParse pp("Tesselation");
-
-  pp.get("mesh_file", filename);
-  pp.get("z_coord", zCoord);
-  pp.get("flip_inside", flipInside);
-
-  // Read the PLY file and put it in a linearized BVH hierarchy.
-  auto implicitFunction = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
-
-  // Put our level-set into Chombo datastructures.
-  RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(new EBGeometryIF<T>(implicitFunction, flipInside, zCoord));
-
-  m_electrodes.push_back(Electrode(baseIF, true));
-
-#endif
-
 using T = float;
+using RIFT = EBGeometry::ReflectIF<T>;
 
 DoubleStl::DoubleStl()
 {
@@ -70,28 +48,28 @@ DoubleStl::DoubleStl()
     pp1.get("live", live);
 
     // Read the PLY file and put it in a linearized BVH hierarchy.
-    auto implicitFunction = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
-
-    // Put our level-set into Chombo datastructures.
+    auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
+    // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
     RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(
-        new EBGeometryIF<T>(implicitFunction, flipInside, zCoord));
+        new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+        // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
     m_electrodes.push_back(Electrode(baseIF, live));
-
-    /*
-    pp1.get("radius", radius);
-    pp1.get("live", live);
-    pp1.getarr("endpoint1", v, 0, SpaceDim);
-    e1 = RealVect(D_DECL(v[0], v[1], v[2]));
-    pp1.getarr("endpoint2", v, 0, SpaceDim);
-    e2 = RealVect(D_DECL(v[0], v[1], v[2]));
-
-    RefCountedPtr<BaseIF> rod1 = RefCountedPtr<BaseIF>(new Tesselation(e1, e2, radius, false));
-
-    m_electrodes.push_back(Electrode(rod1, live));
-    */
   }
 
   if (use_stl2) {
+    pp2.get("mesh_file", filename);
+    pp2.get("z_coord", zCoord);
+    pp2.get("flip_inside", flipInside);
+    pp2.get("live", live);
+
+    // Read the PLY file and put it in a linearized BVH hierarchy.
+    auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
+    // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
+    RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(
+        new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+        // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
+    m_electrodes.push_back(Electrode(baseIF, live));
+
     // TODO
     /*
     pp2.get("radius", radius);
