@@ -146,6 +146,10 @@ DoubleStl.stl1.flip_inside = false         # Flip inside/outside
 DoubleStl.stl1.z_coord     = 0.0           # z-coordinate for 2D slicing this object
 DoubleStl.stl1.live = true    # STL file
 DoubleStl.stl2.on = false  # on or off
+DoubleStl.stl2.mesh_file = flattoflat_10mm.stl    # STL file
+DoubleStl.stl2.flip_inside = false         # Flip inside/outside
+DoubleStl.stl2.z_coord     = 0.0           # z-coordinate for 2D slicing this object
+DoubleStl.stl2.live = false    # STL file
 
 # ====================================================================================================
 # FIELD_STEPPER CLASS OPTIONS
