@@ -70,7 +70,9 @@ public:
          const bool                      a_distributedData,
          int                             a_nCellMax                              = -1,
          int                             a_maxCoarsenings                        = -1,
-         bool                            a_fixOnlyFirstPhaseRegNextToMultiValued = false);
+         bool                            a_fixOnlyFirstPhaseRegNextToMultiValued = false,
+         int                             a_use_eb_tags                           = 0,
+         Vector< IntVectSet >         *  a_tags_level                            = NULL);
 
   /*!
     @brief Get a particular EBIndexSpace

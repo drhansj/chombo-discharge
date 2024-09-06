@@ -173,14 +173,17 @@ ComputationalGeometry::buildGeometries(const ProblemDomain   a_finestDomain,
 
   // Define the multifluid index space.
   const bool useDistributedData = m_useScanShop;
-
+  bool fixOnlyFirstPhaseRegNextToMultiValued = false; //previously was using the default implicitly--dtg
   m_multifluidIndexSpace->define(a_finestDomain.domainBox(), // Define MF
                                  a_probLo,
                                  a_finestDx,
                                  geoServices,
                                  useDistributedData,
                                  a_nCellMax,
-                                 a_maxCoarsen);
+                                 a_maxCoarsen,
+                                 fixOnlyFirstPhaseRegNextToMultiValued,
+                                 a_use_eb_tags,
+                                 a_tags_ptr);
 
   // Delete temps.
   for (int i = 0; i < 2; i++) {
