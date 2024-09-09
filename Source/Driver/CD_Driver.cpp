@@ -1455,6 +1455,20 @@ Driver::setupGeometryOnly()
   }
 
   const int numCoarsenings = m_doCoarsening ? -1 : m_amr->getMaxAmrDepth();
+  /*!
+    @brief Problem domains
+  */
+  Vector<ProblemDomain> m_domains;
+
+  /*!
+    @brief AMR resolutions
+  */
+  Vector<int> m_refinementRatios;
+
+  /*!
+    @brief Level resolutions
+  */
+  Vector<Real> m_dx;
 
   m_computationalGeometry->buildGeometries(m_amr->getFinestDomain(),
                                            m_amr->getProbLo(),
@@ -1544,14 +1558,17 @@ Driver::setupFresh(const int a_initialRegrids)
   {
     input_tags_ptr = &m_tags_level;
   }
+  ///add amr arguments here
   m_computationalGeometry->buildGeometries(m_amr->getFinestDomain(),
                                            m_amr->getProbLo(),
                                            m_amr->getFinestDx(),
                                            m_amr->getMaxEbisBoxSize(),
                                            m_amr->getNumberOfEbGhostCells(),
                                            numCoarsenings,
-                                           m_sendEBGrids, input_tags_ptr);
-
+                                           m_sendEBGrids, 
+                                           m_amr->getDomains(),
+                                           m_amr->getRefinementRatios(),
+                                           input_tags_ptr);
 
   // Register Realms
   m_timeStepper->setAmr(m_amr);

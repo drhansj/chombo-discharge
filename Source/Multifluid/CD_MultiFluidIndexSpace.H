@@ -72,6 +72,9 @@ public:
          int                             a_maxCoarsenings                        = -1,
          bool                            a_fixOnlyFirstPhaseRegNextToMultiValued = false,
          int                             a_use_eb_tags                           = 0,
+         Vector<ProblemDomain>           a_amr_domains                           = Vector<ProblemDomain>(),
+         Vector<int>                     a_amr_ref_ratios                        = Vector<int>(),
+         int                             a_max_ghost_eb                          = 4586,
          Vector< IntVectSet >         *  a_tags_level                            = NULL);
 
   /*!

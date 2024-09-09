@@ -38,11 +38,16 @@ MultiFluidIndexSpace::define(const Box&                      a_domain,
                              int                             a_max_coar,
                              bool                            a_fix_phase,
                              int                             a_use_eb_tags,
+                             Vector<ProblemDomain>           a_amr_domains     ,
+                             Vector<int>                     a_amr_ref_ratios  ,
+                             int                             a_max_ghost_eb    ,
+                             Vector< IntVectSet >         *  a_tags_level      ,
                              Vector< IntVectSet >         *  a_tags_level)
 {
-
+  CH_TIME("CD_MultiFluidIndexSpace::define");
   // Define the gas geoserver
-  if (a_distributedData) {
+  if (a_distributedData)
+  {
     m_ebis[phase::gas]->setDistributedData();
   }
   m_ebis[phase::gas]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::gas], a_nCellMax, a_max_coar, a_use_eb_tags, a_tags_level);
@@ -50,11 +55,14 @@ MultiFluidIndexSpace::define(const Box&                      a_domain,
   MemoryReport::getMaxMinMemoryUsage();
 
   // Define the solid state geoserver. This EBIS might not exist.
-  if (a_geoservers[phase::solid] == NULL) {
+  if (a_geoservers[phase::solid] == NULL)
+  {
     m_ebis[phase::solid] = RefCountedPtr<EBIndexSpace>(NULL);
   }
-  else {
-    if (a_distributedData) {
+  else
+  {
+    if (a_distributedData)
+    {
       m_ebis[phase::solid]->setDistributedData();
     }
     m_ebis[phase::solid]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::solid], a_nCellMax, a_max_coar, a_use_eb_tags, a_tags_level);
