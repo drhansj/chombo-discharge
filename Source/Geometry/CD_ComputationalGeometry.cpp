@@ -156,6 +156,8 @@ ComputationalGeometry::buildGeometries(const ProblemDomain   a_finestDomain,
                                        const int             a_maxGhostEB,
                                        const int             a_maxCoarsen,
                                        int                   a_use_eb_tags,
+                                       Vector<ProblemDomain> a_amr_domains,
+                                       Vector<int>           a_amr_ref_ratios,
                                        Vector< IntVectSet >* a_tags_ptr)
 {
   CH_TIME("ComputationalGeometry::buildGeometries(ProblemDomain, RealVect, Real, int, int, int)");
@@ -163,7 +165,6 @@ ComputationalGeometry::buildGeometries(const ProblemDomain   a_finestDomain,
   // Set the default maximum number of EB ghosts that we will ever use. This is needed because ScanShop will look
   // through grown grid patches when it determines if a grid patch is irregular or not.
   m_maxGhostEB = a_maxGhostEB;
-
   // Build the geoservers. This creates the composite implicit functions and the GeometryService* objects which
   // can be passed to Chombo. Note that the
   Vector<GeometryService*> geoServices(2, nullptr);
@@ -183,6 +184,9 @@ ComputationalGeometry::buildGeometries(const ProblemDomain   a_finestDomain,
                                  a_maxCoarsen,
                                  fixOnlyFirstPhaseRegNextToMultiValued,
                                  a_use_eb_tags,
+                                 a_amr_domains,
+                                 a_amr_ref_ratios,
+                                 a_maxGhostEB,
                                  a_tags_ptr);
 
   // Delete temps.

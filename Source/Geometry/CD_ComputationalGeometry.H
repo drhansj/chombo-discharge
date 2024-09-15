@@ -144,6 +144,8 @@ public:
                   const int             a_maxGhostEB,
                   const int             a_maxCoarsen = -1,
                   int                   a_use_eb_tags= 0,
+                  Vector<ProblemDomain> a_amr_domains=Vector<ProblemDomain>(),
+                  Vector<int>           a_amr_ref_ratios=Vector<int>(),
                   Vector< IntVectSet >* a_tags_level = NULL);
 
 protected:

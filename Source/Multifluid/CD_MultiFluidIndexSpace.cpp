@@ -41,7 +41,6 @@ MultiFluidIndexSpace::define(const Box&                      a_domain,
                              Vector<ProblemDomain>           a_amr_domains     ,
                              Vector<int>                     a_amr_ref_ratios  ,
                              int                             a_max_ghost_eb    ,
-                             Vector< IntVectSet >         *  a_tags_level      ,
                              Vector< IntVectSet >         *  a_tags_level)
 {
   CH_TIME("CD_MultiFluidIndexSpace::define");
@@ -50,7 +49,8 @@ MultiFluidIndexSpace::define(const Box&                      a_domain,
   {
     m_ebis[phase::gas]->setDistributedData();
   }
-  m_ebis[phase::gas]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::gas], a_nCellMax, a_max_coar, a_use_eb_tags, a_tags_level);
+  m_ebis[phase::gas]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::gas], a_nCellMax, a_max_coar,
+                             a_use_eb_tags, a_amr_domains, a_amr_ref_ratios, a_max_ghost_eb, a_tags_level);
 
   MemoryReport::getMaxMinMemoryUsage();
 
@@ -65,7 +65,8 @@ MultiFluidIndexSpace::define(const Box&                      a_domain,
     {
       m_ebis[phase::solid]->setDistributedData();
     }
-    m_ebis[phase::solid]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::solid], a_nCellMax, a_max_coar, a_use_eb_tags, a_tags_level);
+    m_ebis[phase::solid]->define(a_domain, a_origin, a_dx, *a_geoservers[phase::solid], a_nCellMax, a_max_coar, 
+                                 a_use_eb_tags, a_amr_domains, a_amr_ref_ratios, a_max_ghost_eb, a_tags_level);
 
     MemoryReport::getMaxMinMemoryUsage();
   }
