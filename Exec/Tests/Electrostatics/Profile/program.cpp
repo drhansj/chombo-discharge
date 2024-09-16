@@ -4,6 +4,7 @@
 #include "CD_FieldStepper.H"
 #include "CD_CellTagger.H"
 #include "CD_AmrMesh.H"
+#include "DebuggingTools.H"
 #include "ParmParse.H"
 
 using namespace ChomboDischarge;
