@@ -377,7 +377,7 @@ EBAMRSurfaceDeposition::defineDepositionStencils() noexcept
       };
     }
   }
-  CH_START(t2);
+  CH_STOP(t2);
 }
 
 void
