@@ -1,8 +1,8 @@
 #!/bin/bash
 #from Nate's notes on slack:
 # I think this will work:
-# compile.sh FALSE TRUE 2 FALSE for gdb'able
-#note - not _
+# compile.sh FALSE TRUE 2 FALSE for gdb'able 2D
+
 export DISCHARGE_HOME=$HOME/_discharge/chombo-discharge
 export CHOMBO_HOME=$DISCHARGE_HOME/Submodules/Chombo-3.3/lib
 export OPT_SETTING=$1
