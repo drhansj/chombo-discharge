@@ -134,7 +134,7 @@ EBAMRParticleMesh::defineEBParticleMesh()
     const bool hasCoar = lvl > 0;
 
     m_ebParticleMesh[lvl] = RefCountedPtr<LayoutData<EBParticleMesh>>(new LayoutData<EBParticleMesh>(dbl));
-    CH_START(t1);
+    CH_STOP(t1);
 
     // Define the "regular" particle-mesh interpolation objects. These are defined on the input grids.
     CH_START(t2);
@@ -179,7 +179,7 @@ EBAMRParticleMesh::defineEBParticleMesh()
     else {
       m_ebParticleMeshFiCo[lvl] = RefCountedPtr<LayoutData<EBParticleMesh>>(nullptr);
     }
-    CH_START(t3);
+    CH_STOP(t3);
   }
 }
 
