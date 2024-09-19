@@ -1302,7 +1302,7 @@ FieldSolver::writeMultifluidData(LevelData<EBCellFAB>&    a_output,
 
     scratchGas.exchange();
   }
-  CH_START(t2);
+  CH_STOP(t2);
 
   // Interpolate ghost cells on both phases.
   CH_START(t3);
