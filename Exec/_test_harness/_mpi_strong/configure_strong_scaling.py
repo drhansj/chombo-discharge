@@ -65,7 +65,7 @@ parser.add_argument('--batch', type=str, help='batch file template'   ,default="
 parser.add_argument('--max_num_proc', type=int, help='max number of processors for each run'   ,default='8')
 parser.add_argument('--prefix', type=str, help='name of test["mpi_strong"]',default="mpi_strong")
 parser.add_argument('--max_lev_min', type=int, help='minimum testing max level (0)',default='0')
-parser.add_argument('--max_lev_max', type=int, help='maximum testing max level (8)',default='8')
+parser.add_argument('--max_lev_max', type=int, help='maximum testing max level (9)',default='9')
 parser.add_argument('--sbatch_instead_of_source', type=bool, help='Whether run.sh calls sbatch instead of source for each case[False].' ,default=False)
 
 
