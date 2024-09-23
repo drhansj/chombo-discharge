@@ -30,7 +30,7 @@ AmrMesh.redist_radius   = 1           # Redistribution radius for hyperbolic con
 # ====================================================================================================
 Driver.send_eb_grids                   = I_SEND_EB_GRIDS
 Driver.verbosity                       = 3             # Engine verbosity
-Driver.geometry_generation             = chombo-discharge       # Grid generation method, 'chombo-discharge' or 'chombo'
+Driver.geometry_generation             = chombo        # Grid generation method, 'chombo-discharge' or 'chombo'
 Driver.geometry_scan_level             = 0             # Geometry scan level for chombo-discharge geometry generator
 Driver.plot_interval                   = 10            # Plot interval
 Driver.checkpoint_interval             = 10            # Checkpoint interval
