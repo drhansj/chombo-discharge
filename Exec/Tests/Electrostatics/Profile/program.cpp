@@ -6,7 +6,7 @@
 #include "CD_AmrMesh.H"
 #include "DebuggingTools.H"
 #include "ParmParse.H"
-
+#include "CD_MFDebuggingFunctions.H"
 using namespace ChomboDischarge;
 using namespace Physics::Electrostatics;
 /// Only tag cells near a particular point
@@ -115,9 +115,18 @@ main(int argc, char* argv[])
   RefCountedPtr<ComputationalGeometry> compgeom   = RefCountedPtr<ComputationalGeometry>(new RodPlaneProfile());
   RefCountedPtr<AmrMesh>               amr        = RefCountedPtr<AmrMesh>(new AmrMesh());
   RefCountedPtr<GeoCoarsener>          geocoarsen = RefCountedPtr<GeoCoarsener>(new GeoCoarsener());
-  RealVect center = RealVect::Unit;
-  center *= 0.5;
-  Real radius = 0.1;
+  ParmParse pp_amrmesh("AmrMesh");
+  Vector<Real> lo_corner, hi_corner;
+  pp_amrmesh.getarr( "lo_corner", lo_corner,0, SpaceDim);
+  pp_amrmesh.getarr( "hi_corner", hi_corner,0, SpaceDim);
+  RealVect center;
+  for(int idir = 0; idir < SpaceDim; idir++)
+  {
+    center[idir] = lo_corner[idir];
+  }
+  Real frac = 0.02;
+  Real radius = frac*(hi_corner[0]-lo_corner[0]);
+
   CellTaggerAroundPoint* derived_ptr = new CellTaggerAroundPoint( amr, center, radius);
   CellTagger*               base_ptr = static_cast<CellTagger*>(derived_ptr);
   Vector<IntVectSet>         tags_level;
