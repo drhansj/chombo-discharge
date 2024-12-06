@@ -22,11 +22,17 @@ main(int argc, char* argv[])
   const std::string input_file = argv[1];
   ParmParse         pp(argc - 2, argv + 2, NULL, input_file.c_str());
 
+  // gas type
+  enum gasType {air, sf6};
+  auto activeGas = air;
+
   // Read BOLSIG+ data into alpha and eta coefficients
   const Real N  = 2.45E25;
   const Real O2 = 0.2;
   const Real N2 = 0.8;
-  const Real T  = 300.0;
+
+  const Real T  = 300.0; // room temp in K
+  const Real P = 1.e5; // 1atm in Pa
 
   LookupTable1D<> ionizationData = DataParser::fractionalFileReadASCII("transport_data.txt",
                                                                        "E/N (Td)	Townsend ioniz. coef. alpha/N (m2)",
@@ -47,6 +53,13 @@ main(int argc, char* argv[])
   ionizationData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
   attachmentData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
 
+  LookupTable1D<> ionDiffData = DataParser::fractionalFileReadASCII("ionDiffusion.txt",
+                                                                    "E (V/cm-atm)  Ion Diffusion (cm^2/V s)",
+                                                                    "");
+  ionDiffData.scale<0>(10./133.322);
+  ionDiffData.scale<1>(1./100.);
+  ionDiffData.prepareTable(0, 7, LookupTable::Spacing::Uniform);
+
   // Read data for the voltage curve.
   Real peak           = 0.0;
   Real t0             = 0.0;
@@ -64,50 +77,80 @@ main(int argc, char* argv[])
   di.get("second_townsend", secondTownsend);
 
   // Set geometry and AMR
-  //RefCountedPtr<ComputationalGeometry> compgeom = RefCountedPtr<ComputationalGeometry>(new Vessel());
   RefCountedPtr<ComputationalGeometry> compgeom = RefCountedPtr<ComputationalGeometry>(new DoubleStl());
   RefCountedPtr<AmrMesh>               amr      = RefCountedPtr<AmrMesh>(new AmrMesh());
 
   // Define transport data
   auto alpha = [&](const Real& E, const RealVect& x) -> Real {
-    return ionizationData.interpolate<1>(E);
+    Real e_si = E/P; // V/m pa
+    Real e = e_si * (1.e5)/(1.e3 * 1.e3); // kV/mm bar
+
+    Real alpha = 0;
+    // air - in units 1/mm bar
+    if (activeGas == air)
+      {
+        if (e < 2.588)
+          alpha = 0;
+        else if (e < 7.943)
+          alpha = 1.6053 * std::pow(e - 2.165, 2) - 0.2873;
+        else
+          alpha = 16.7766 * e - 80.006;
+      }
+
+    // sf6 - in units 1/mm bar
+    else if (activeGas == sf6)
+      {
+        if (e < 8.9246)
+          alpha = 0;
+        else if (e < 12.36)
+          alpha = 27.9 * (e - 8.9246);
+        else
+          alpha = 22.3595 * e - 180.1709;
+      }
+
+    alpha *= 1.e3 / 1.e0; // from 1/mm bar to 1/m pa - but bar to Pa scales seem wong??
+    return alpha;
+    //return ionizationData.interpolate<1>(E);
   };
   auto eta = [&](const Real& E, const RealVect& x) -> Real {
-    return attachmentData.interpolate<1>(E);
+    //return attachmentData.interpolate<1>(E);
+    return 0.;
   };
   auto alphaEff = [&](const Real& E, const RealVect x) -> Real {
     return alpha(E, x) - eta(E, x);
   };
   auto bgRate = [&](const Real& E, const RealVect& x) -> Real {
-    return 0.0;
+    return 0.;
   };
   auto detachRate = [&](const Real& E, const RealVect& x) -> Real {
-    const Real Etd = E / (N * 1E-21);
-    return 1.24E-11 * 1E-6 * N * exp(-std::pow((179.0 / (8.8 + Etd)), 2));
+    return 0.;
   };
   auto ionMobility = [&](const Real& E) -> Real {
-    return 2E-4;
+    // return 0.;
+    return 0.595e-4; // 0.595 cm2/V-sec
   };
   auto ionDiffusion = [&](const Real& E) -> Real {
-    return ionMobility(E) * Units::kb * T / Units::Qe;
+    //return 0.;
+    // pout() << "ionDiff" << E << " -> "
+    //        << ionMobility(E) * Units::kb * T / Units::Qe
+    //        << " vs "
+    //        << ionDiffData.interpolate<1>(E)
+    //        << std::endl;
+    // return ionMobility(E) * Units::kb * T / Units::Qe;
+    return ionDiffData.interpolate<1>(E);
   };
   auto ionDensity = [&](const RealVect& x) -> Real {
-    return 4.E6;
+    return 0.;
   };
   auto voltageCurve = [&](const Real& t) -> Real {
-    // return peak * (exp(-(t + t0) / t1) - exp(-(t + t0) / t2)); //
-    return t <= t1 ? (t0 + (peak/t1 - t0)*t) : peak; // linear
+    return 100000 * 1.054 * (exp(-t * 1.e6/67.) - exp(-t * 1.e6/.61)); // V
   };
   auto fieldEmission = [&](const Real& E, const RealVect& x) -> Real {
-    const Real beta = 1.0; // Field enhancement factor
-    const Real phi  = 4.5;
-    const Real C1   = 1.54E-6 * std::pow(10, 4.52 / sqrt(phi)) / phi;
-    const Real C2   = 2.84E9 * std::pow(phi, 1.5);
-
-    return C1 * (E * E) * exp(-C2 / (beta * E));
+    return 0.;
   };
   auto secondaryEmission = [&](const Real& E, const RealVect& x) -> Real {
-    return secondTownsend;
+    return 0.;
+    //return secondTownsend;
   };
 
   // Set up time stepper
@@ -120,11 +163,11 @@ main(int argc, char* argv[])
   timestepper->setEta(eta);
   timestepper->setBackgroundRate(bgRate);
   timestepper->setDetachmentRate(detachRate);
-  timestepper->setFieldEmission(fieldEmission);
   timestepper->setIonMobility(ionMobility);
   timestepper->setIonDiffusion(ionDiffusion);
   timestepper->setIonDensity(ionDensity);
   timestepper->setVoltageCurve(voltageCurve);
+  timestepper->setFieldEmission(fieldEmission);
   timestepper->setSecondaryEmission(secondaryEmission);
 
   // Set up the Driver and run it
