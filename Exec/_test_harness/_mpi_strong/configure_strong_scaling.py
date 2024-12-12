@@ -123,17 +123,12 @@ while (i_cur_example < i_num_example):
         example_prefix = "tests_profile_square"
         i_found = 1
     elif(i_cur_example == 2):
-        driver_dir     = home_str + "/../../Tests/AdvectionDiffusion/Godunov"
-        input_template = home_str + "/../_input_templates/tests_advdiff_godunov_2d.input.template"
-        i_dim          = 2
-        example_prefix = "tests_profile_advdiff_godunov_2d"
+        driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
+        input_template = home_str + "/../_input_templates/tests_profile_circle.input.template"
+        i_dim          = 3
+        example_prefix = "tests_profile_circle"
         i_found = 1
     elif(i_cur_example == 3):
-        driver_dir     = home_str + "/../../Tests/AdvectionDiffusion/Godunov"
-        input_template = home_str + "/../_input_templates/tests_advdiff_godunov_3d.input.template"
-        i_dim          = 2
-        example_prefix = "tests_profile_advdiff_godunov_3d"
-        i_found = 1
 
     if(i_found == 0):
         print("configure_strong_scaling: logic error")
