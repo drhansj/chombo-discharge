@@ -1,7 +1,7 @@
 #!/bin/csh
 
 setenv CH_TIMER 1
-setenv CH_OUTPUT_INTERVAL 1
+setenv CH_OUTPUT_INTERVAL 4586
 setenv OMP_NUM_THREADS 1
 
 setenv input INPUT_FILE
