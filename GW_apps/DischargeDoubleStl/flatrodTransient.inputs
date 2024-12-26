@@ -3,10 +3,10 @@
 # ====================================================================================================
 # AmrMesh.lo_corner       = -.5 -.5 -.5    # Low corner of problem domain
 # AmrMesh.hi_corner       =  .5  .5  .5    # High corner of problem domain
-AmrMesh.lo_corner        = -0.2  -0.2   # Low corner of problem domain
-AmrMesh.hi_corner        =  0.2  0.2   # High corner of problem domain
+AmrMesh.lo_corner        = -0.2  -0.2 -0.2  # Low corner of problem domain
+AmrMesh.hi_corner        =  0.2  0.2  0.2  # High corner of problem domain
 AmrMesh.verbosity        = -1          # Controls verbosity. 
-AmrMesh.coarsest_domain  = 32 32      # Number of cells on coarsest domain
+AmrMesh.coarsest_domain  = 32 32 32     # Number of cells on coarsest domain
 AmrMesh.max_amr_depth    = 5           # Maximum amr depth
 AmrMesh.max_sim_depth    = -1          # Maximum simulation depth
 AmrMesh.fill_ratio       = 1.0         # Fill ratio for grid generation
@@ -36,11 +36,11 @@ Driver.geometry_generation             = chombo-discharge # Grid generation meth
 Driver.geometry_scan_level             = 0                # Geometry scan level for chombo-discharge geometry generator
 Driver.ebis_memory_load_balance        = false            # If using Chombo geo-gen, use memory as loads for EBIS generation  
 Driver.output_dt                       = -1.0             # Output interval (values <= 0 enforces step-based output)
-Driver.plot_interval                   = 250               # Plot interval
-Driver.checkpoint_interval             = -1               # Checkpoint interval
+Driver.plot_interval                   = 5000               # Plot interval
+Driver.checkpoint_interval             = 50000               # Checkpoint interval
 Driver.regrid_interval                 = -1               # Regrid interval
 Driver.write_regrid_files              = false            # Write regrid files or not.
-Driver.write_restart_files             = false            # Write restart files or not
+Driver.write_restart_files             = true            # Write restart files or not
 Driver.initial_regrids                 = 5                # Number of initial regrids
 Driver.do_init_load_balance            = false            # If true, load balance the first step in a fresh simulation.
 Driver.start_time                      = 0                # Start time (fresh simulations only)
