@@ -11,6 +11,7 @@
 
 // Chombo includes
 #include <ParmParse.H>
+#include <TransformIF.H>
 
 // EBGeometry include
 #include <EBGeometry.hpp>
@@ -46,12 +47,25 @@ DoubleStl::DoubleStl()
     pp1.get("z_coord", zCoord);
     pp1.get("flip_inside", flipInside);
     pp1.get("live", live);
+    Real x_offset = 0.;
+    pp1.query("x_offset", x_offset);
+
+    // // Read the PLY file and put it in a linearized BVH hierarchy.
+    // auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
+    // // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
+    // RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(
+    //     new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+    //     // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
+    // m_electrodes.push_back(Electrode(baseIF, live));
 
     // Read the PLY file and put it in a linearized BVH hierarchy.
     auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
-    // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
-    RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(
-        new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+    BaseIF* baseStlIF = new EBGeometryIF<T>(stlIF, flipInside, zCoord);
+    TransformIF* transIF = new TransformIF(*baseStlIF);
+    RealVect offset = RealVect::Zero;
+    offset[0] = x_offset;
+    transIF->translate(offset);
+    RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(transIF);
         // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
     m_electrodes.push_back(Electrode(baseIF, live));
   }
@@ -61,12 +75,28 @@ DoubleStl::DoubleStl()
     pp2.get("z_coord", zCoord);
     pp2.get("flip_inside", flipInside);
     pp2.get("live", live);
+    Real x_offset = 0.;
+    pp2.query("x_offset", x_offset);
+    // // Read the PLY file and put it in a linearized BVH hierarchy.
+    // auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
+    // std::shared_ptr<BaseIF> baseStlIF(new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+    // // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
+    // std::shared_ptr<TransformIF> transIF(new TransformIF(*(baseStlIF.get())));
+    // RealVect offset = RealVect::Zero;
+    // offset[0] = x_offset;
+    // transIF->translate(offset);
+    // RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(transIF.get());
+    //     // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
+    // m_electrodes.push_back(Electrode(baseIF, live));
 
     // Read the PLY file and put it in a linearized BVH hierarchy.
     auto stlIF = EBGeometry::Parser::readIntoLinearBVH<T>(filename);
-    // std::shared_ptr<RIFT> reflectIF(new RIFT(implicitFunction, 0)); // 0 = yz plane
-    RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(
-        new EBGeometryIF<T>(stlIF, flipInside, zCoord));
+    BaseIF* baseStlIF = new EBGeometryIF<T>(stlIF, flipInside, zCoord);
+    TransformIF* transIF = new TransformIF(*baseStlIF);
+    RealVect offset = RealVect::Zero;
+    offset[0] = x_offset;
+    transIF->translate(offset);
+    RefCountedPtr<BaseIF> baseIF = RefCountedPtr<BaseIF>(transIF);
         // new EBGeometryIF<T>(reflectIF, flipInside, zCoord));
     m_electrodes.push_back(Electrode(baseIF, live));
 

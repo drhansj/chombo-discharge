@@ -31,27 +31,37 @@ main(int argc, char* argv[])
   const Real O2 = 0.2;
   const Real N2 = 0.8;
 
-  const Real T  = 300.0; // room temp in K
-  const Real P = 1.e5; // 1atm in Pa
+  Real T  = 300.0; // room temp in K
+  Real P = 1.e5; // 1atm in Pa
 
-  LookupTable1D<> ionizationData = DataParser::fractionalFileReadASCII("transport_data.txt",
-                                                                       "E/N (Td)	Townsend ioniz. coef. alpha/N (m2)",
-                                                                       "");
-  LookupTable1D<> attachmentData = DataParser::fractionalFileReadASCII("transport_data.txt",
-                                                                       "E/N (Td)	Townsend attach. coef. eta/N (m2)",
-                                                                       "");
+  ParmParse pphys("physical_parameters");
+  pphys.get("pressure", P);
+  pphys.get("temperature", T);
+  std::string gasType;
+  pphys.get("gas_type", gasType);
+  if (gasType == "air")
+    activeGas = air;
+  if (gasType == "sf6")
+    activeGas = sf6;
 
-  ionizationData.truncate(10, 2000, 0);
-  attachmentData.truncate(10, 2000, 0);
+  // LookupTable1D<> ionizationData = DataParser::fractionalFileReadASCII("transport_data.txt",
+  //                                                                      "E/N (Td)	Townsend ioniz. coef. alpha/N (m2)",
+  //                                                                      "");
+  // LookupTable1D<> attachmentData = DataParser::fractionalFileReadASCII("transport_data.txt",
+  //                                                                      "E/N (Td)	Townsend attach. coef. eta/N (m2)",
+  //                                                                      "");
 
-  ionizationData.scale<0>(N * 1.E-21);
-  attachmentData.scale<0>(N * 1.E-21);
+  // ionizationData.truncate(10, 2000, 0);
+  // attachmentData.truncate(10, 2000, 0);
 
-  ionizationData.scale<1>(N);
-  attachmentData.scale<1>(N);
+  // ionizationData.scale<0>(N * 1.E-21);
+  // attachmentData.scale<0>(N * 1.E-21);
 
-  ionizationData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
-  attachmentData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
+  // ionizationData.scale<1>(N);
+  // attachmentData.scale<1>(N);
+
+  // ionizationData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
+  // attachmentData.prepareTable(0, 500, LookupTable::Spacing::Exponential);
 
   LookupTable1D<> ionDiffData = DataParser::fractionalFileReadASCII("ionDiffusion.txt",
                                                                     "E (V/cm-atm)  Ion Diffusion (cm^2/V s)",
@@ -86,7 +96,7 @@ main(int argc, char* argv[])
     Real e = e_si * (1.e5)/(1.e3 * 1.e3); // kV/mm bar
 
     Real alpha = 0;
-    // air - in units 1/mm bar
+    // air alpha/P- in units 1/mm bar
     if (activeGas == air)
       {
         if (e < 2.588)
@@ -97,7 +107,7 @@ main(int argc, char* argv[])
           alpha = 16.7766 * e - 80.006;
       }
 
-    // sf6 - in units 1/mm bar
+    // sf6 alpha/P- in units 1/mm bar
     else if (activeGas == sf6)
       {
         if (e < 8.9246)
@@ -107,8 +117,8 @@ main(int argc, char* argv[])
         else
           alpha = 22.3595 * e - 180.1709;
       }
-
-    alpha *= 1.e3 / 1.e0; // from 1/mm bar to 1/m pa - but bar to Pa scales seem wong??
+    alpha *= 1.e3 / 1.e5; // from 1/mm bar to 1/m pa
+    alpha *= P; // units 1/m
     return alpha;
     //return ionizationData.interpolate<1>(E);
   };
