@@ -148,11 +148,14 @@ DoubleStl.stl1.mesh_file = ../geometries/rod.stl    # STL file
 DoubleStl.stl1.flip_inside = false         # Flip inside/outside
 DoubleStl.stl1.z_coord     = 0.0           # z-coordinate for 2D slicing this object
 DoubleStl.stl1.live = true    # hot or not
+# DoubleStl.stl1.x_offset = 0.01
+
 DoubleStl.stl2.on = true  # on or off
 DoubleStl.stl2.mesh_file = ../geometries/flatground.stl    # STL file
 DoubleStl.stl2.flip_inside = false         # Flip inside/outside
 DoubleStl.stl2.z_coord     = 0.0           # z-coordinate for 2D slicing this object
 DoubleStl.stl2.live = false    # hot or not
+DoubleStl.stl2.x_offset = 0.00
 
 # ====================================================================================================
 # DischargeInceptionStepper class options
@@ -169,8 +172,8 @@ DischargeInceptionStepper.plt_vars         = K Uinc bg_rate emission field poiss
 
 # Static mode
 DischargeInceptionStepper.voltage_lo       = 10E3                     # Low voltage multiplier
-DischargeInceptionStepper.voltage_hi       = 40E3                     # Highest voltage multiplier
-DischargeInceptionStepper.voltage_steps    = 13			                # Number of voltage steps
+DischargeInceptionStepper.voltage_hi       = 150E3                     # Highest voltage multiplier
+DischargeInceptionStepper.voltage_steps    = 13			                # Number of voltage steps - steps BETWEEN end points
 
 # Dynamic mode
 DischargeInceptionStepper.ion_transport = true                    # Turn on/off ion transport
@@ -222,3 +225,14 @@ CellTagger.verbosity          = 10            # Grow tagged cells
 # CellTagger.ref_box2_lo     = -0.02 -0.02 0.0  # Refine region between
 # CellTagger.ref_box2_hi     =  0.01  0.02 0.0  # these two corners.
 # CellTagger.ref_box2_lvl    = 2            # Refine to this level.
+
+# ====================================================================================================
+# Physical parameters
+# ====================================================================================================
+physical_parameters.pressure = 1.E5 # bars
+physical_parameters.temperature = 300 # kelvin
+physical_parameters.gas_type = air #
+#
+# physical_parameters.pressure = 1.67E5 # bars
+# physical_parameters.temperature = 300 # kelvin
+# physical_parameters.gas_type = sf6 #
