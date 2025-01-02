@@ -53,8 +53,8 @@ parser.add_argument('--max_lev_max', type=int, help='maximum testing max level (
 
 
 args = parser.parse_args()
-data_directory   =           "_mpi_strong_12_17_2024"
-summary_file_name= "summary_of_mpi_strong_12_17_2024.tex"
+data_directory   =           "_mpi_strong_12_19_2024"
+summary_file_name= "summary_of_mpi_strong_12_19_2024.tex"
 print(args)
 home_str = os.getcwd();
 print ("homedir = " + home_str)
@@ -209,7 +209,7 @@ while i_max_lev <= args.max_lev_max:
                         output_str_time  = subprocess.check_output(comm_str_time , shell=True)
                     except subprocess.CalledProcessError as err_time:
                         bork_flag = 1
-                        print (err_time.output)
+                        print ("borkflag = 1" + err_time.output)
 
                     if(bork_flag == 0):
                         resi_list =  output_str_resi.split()
@@ -224,6 +224,11 @@ while i_max_lev <= args.max_lev_max:
                         resi_field = resi_list[resi_len-1]
                         iter_field = iter_list[iter_len-1]
                         time_field = time_list[time_len-1]
+                        #print("resi_field   = " + resi_field)
+                        #print("iter_field   = " + iter_field)
+                        #print("time_field   = " + time_field)
+                        #print("comm_str_time= " + comm_str_time)
+                        #exit()
                         
                         file_entry = str(i_max_lev) + " & " +  use_eb_label + " & " + str(i_num_proc) + " & " + bot_solver_label + " & "  + resi_field + " & " + iter_field  + " & " + time_field + "\\\\";
                         f_summary.write(file_entry + "\n");

@@ -163,67 +163,60 @@ while i_max_lev <= args.max_lev_max:
             use_eb_str = "USE_EB_TAGS_TRUE"
         i_num_proc = args.min_num_proc
         while i_num_proc <= args.max_num_proc:
-            i_bot_solver = 0
-            while(i_bot_solver < 3):
-                bot_solver_type  = "solver4586"
-                if(i_bot_solver == 0):
-                    bot_solver_type  = "simple"
-                if(i_bot_solver == 1):
-                    bot_solver_type = "bicgstab"
-                if(i_bot_solver == 2):
-                    bot_solver_type = "gmres"
-                
-                mpi_directory = runs_directory + "/_" + str(i_num_proc)  + "_procs_" + use_eb_str + "_botsolve_" + bot_solver_type
-                if not os.path.exists(mpi_directory):
-                    print("making directory " + mpi_directory)
-                    os.mkdir(mpi_directory)
-                funk = class_status(example_prefix, driver_dir, i_opt, i_deb, i_dim, i_mpi)
-                full_exec_name = all_exec_dir_name + "/" + funk.exec_name
-                print("full_exec_name = " + full_exec_name) 
-                print("all_exec_dir_name = " + all_exec_dir_name) 
-                #soft link executable to rundir_name/main.exe
-                main_name = mpi_directory + "/main.exe"
-                if(os.path.exists(main_name)):
-                    command_str = "rm " + main_name
-                    print(    command_str)
-                    os.system(command_str)
-                command_str =  " ln -s "   + full_exec_name + " " + main_name
+
+            #only bicgstab actually works
+            bot_solver_type  = "bicgstab"
+            mpi_directory = runs_directory + "/_" + str(i_num_proc)  + "_procs_" + use_eb_str 
+            if not os.path.exists(mpi_directory):
+                print("making directory " + mpi_directory)
+                os.mkdir(mpi_directory)
+            funk = class_status(example_prefix, driver_dir, i_opt, i_deb, i_dim, i_mpi)
+            full_exec_name = all_exec_dir_name + "/" + funk.exec_name
+            print("full_exec_name = " + full_exec_name) 
+            print("all_exec_dir_name = " + all_exec_dir_name) 
+            #soft link executable to rundir_name/main.exe
+            main_name = mpi_directory + "/main.exe"
+            if(os.path.exists(main_name)):
+                command_str = "rm " + main_name
                 print(    command_str)
                 os.system(command_str)
+                
+            command_str =  " ln -s "   + full_exec_name + " " + main_name
+            print(    command_str)
+            os.system(command_str)
 
-                batch_file_name = mpi_directory + "/" +  batch_root
-                print("creating batch file " + batch_file_name  + " from " + batch_template)
-                f_batch_template = open(batch_template,'r')
-                f_batch = open(batch_file_name, 'w')
+            batch_file_name = mpi_directory + "/" +  batch_root
+            print("creating batch file " + batch_file_name  + " from " + batch_template)
+            f_batch_template = open(batch_template,'r')
+            f_batch = open(batch_file_name, 'w')
 
-                for batchster in f_batch_template:
-                    t1str = batchster;
-                    t2str = t1str.replace("NUM_NODE", str(i_num_proc))
-                    t3str = t2str.replace("EXECUTABLE_FILE", "main.exe")
-                    t4str = t3str.replace("INPUT_FILE", input_root)
-                    f_batch.write(t4str)
-                f_batch.close()
-                f_batch_template.close()
+            for batchster in f_batch_template:
+                t1str = batchster;
+                t2str = t1str.replace("NUM_NODE", str(i_num_proc))
+                t3str = t2str.replace("EXECUTABLE_FILE", "main.exe")
+                t4str = t3str.replace("INPUT_FILE", input_root)
+                f_batch.write(t4str)
+            f_batch.close()
+            f_batch_template.close()
 
-                f_input_template = open(input_template,'r')
-                input_file_name = mpi_directory + "/" +  input_root
-                print("creating input file " + input_file_name  + " from " + input_template)
-                f_input = open(input_file_name, 'w')
-                for inputster in f_input_template:
-                    t1str = inputster
-                    t2str = t1str.replace("MAX_LEVEL", str(i_max_lev))
-                    t3str = t2str.replace("I_SEND_EB_GRIDS", str(i_use_eb))
-                    t4str = t3str.replace("BOTTOM_SOLVER_TYPE", str(i_use_eb))
-                    f_input.write(t4str)
-                f_input.close()
-                f_input_template.close()
+            f_input_template = open(input_template,'r')
+            input_file_name = mpi_directory + "/" +  input_root
+            print("creating input file " + input_file_name  + " from " + input_template)
+            f_input = open(input_file_name, 'w')
+            for inputster in f_input_template:
+                t1str = inputster
+                t2str = t1str.replace("MAX_LEVEL", str(i_max_lev))
+                t3str = t2str.replace("I_SEND_EB_GRIDS", str(i_use_eb))
+                t4str = t3str.replace("BOTTOM_SOLVER_TYPE", str(i_use_eb))
+                f_input.write(t4str)
+            f_input.close()
+            f_input_template.close()
 
-                batch_command = "\n pushd " +  mpi_directory + "; source " + batch_root + "; popd \n"
-                if(args.sbatch_instead_of_source):
-                    batch_command = "\n pushd " +  mpi_directory + "; sbatch " + batch_root + "; popd \n"
+            batch_command = "\n pushd " +  mpi_directory + "; source " + batch_root + "; popd \n"
+            if(args.sbatch_instead_of_source):
+                batch_command = "\n pushd " +  mpi_directory + "; sbatch " + batch_root + "; popd \n"
                     
-                f_run_all.write( batch_command)
-                i_bot_solver = i_bot_solver + 1
+            f_run_all.write( batch_command)
             i_num_proc = 2*i_num_proc
         i_use_eb = i_use_eb + 1
     i_max_lev = i_max_lev + 1

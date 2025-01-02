@@ -1,9 +1,9 @@
-# only bicgstab works
+# Bottom solver type. 'simple', 'bicgstab', or 'gmres'
 FieldSolverMultigrid.gmg_bottom_solver = bicgstab
 # turn eb grid refinement on or off (false means EB defined everywhere)
-Driver.send_eb_grids                   = I_SEND_EB_GRIDS
+Driver.send_eb_grids                   = 1
 # Maximum amr depth
-AmrMesh.max_amr_depth                  = MAX_LEVEL           
+AmrMesh.max_amr_depth                  = 2
 #interal EBIndexSpace parameters for grid generation for when send_eb_grids = true
 EBIS_grids.fill_ratio = 0.7
 EBIS_grids.block_fact = 8
