@@ -114,7 +114,7 @@ protected:
   ///whether to confine EBGrid to what Tagger says
   int m_sendEBGrids;
 
-  
+
   /*!
     @brief Cell tagger
   */

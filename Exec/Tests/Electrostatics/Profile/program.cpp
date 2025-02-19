@@ -22,15 +22,21 @@ public:
   RealVect               m_origin;
   RealVect               m_center            ;
   Real                   m_manhattan_radius  ;
-  CellTaggerAroundPoint(RefCountedPtr<AmrMesh> a_mesh_ptr ,
-                        RealVect               a_center   ,
-                        Real                   a_manhattan_radius ): CellTagger()
+  RefCountedPtr<AmrMesh> m_amr;
+  CellTaggerAroundPoint(RefCountedPtr<AmrMesh> a_mesh_ptr): CellTagger()
   {
+    m_amr = a_mesh_ptr;
     m_domains = a_mesh_ptr->getDomains();
     m_dx      = a_mesh_ptr->getDx();
     m_origin  = a_mesh_ptr->getProbLo();
-    m_center  = a_center;
-    m_manhattan_radius  = a_manhattan_radius;
+
+    ParmParse pp_amrmesh("AmrMesh");
+    Vector<Real> cent;
+    pp_amrmesh.getarr("fixed_tag_center", cent, 0, SpaceDim);
+    for (int d=0; d!=SpaceDim; d++) {m_center[d] = cent[d];}
+    pp_amrmesh.get("fixed_tag_radius", m_manhattan_radius);
+    // m_center  = a_center;
+    // m_manhattan_radius  = a_manhattan_radius;
   }
   virtual ~CellTaggerAroundPoint()
   {;}
@@ -45,12 +51,14 @@ public:
   void getTagsVector(Vector<IntVectSet>& a_tags) const
   {
     a_tags.resize(m_domains.size());
-    for(int ilev = 0; ilev < m_domains.size(); ilev++)
+    for(int ilev = 0; ilev < m_domains.size()-1; ilev++)
     {
       Real dx_lev = m_dx[ilev];
       IntVect iv_cent;
-      Real r_min_rad = std::min(1.1*dx_lev, m_manhattan_radius);
-      
+      Real r_min_rad = std::max(1.1*dx_lev, m_manhattan_radius);
+      // scale down with level for proper nesting
+      r_min_rad *= std::pow(0.9, ilev);
+
       int i_radius = int(r_min_rad/dx_lev);
       IntVect region_lo, region_hi;
       for(int idir = 0; idir < SpaceDim; idir++)
@@ -61,12 +69,13 @@ public:
         region_hi[idir] = iv_cent[idir] + i_radius;
       }
       Box tag_region(region_lo, region_hi);
+      std::cout << "tag region" << tag_region << std::endl;
       a_tags[ilev] = IntVectSet(tag_region);
     } //end loop over levels
   }   //end function getTagVec
 
   ///EBAMRTags is a Vector<RefCountedPtr<LayoutData<DenseIntVectSet>
-  bool tagCells(EBAMRTags& a_tags)
+  bool tagCells(EBAMRTags& a_tags) override
   {
     Vector<IntVectSet> vec_ivs_tags;
     getTagsVector(vec_ivs_tags);
@@ -75,21 +84,25 @@ public:
     {
       LayoutData<DenseIntVectSet>  & level_tag_ldivs = (*a_tags[ilev]);
       const BoxLayout& base_layout = level_tag_ldivs.boxLayout();
-      const DisjointBoxLayout* dis_box_ptr = dynamic_cast<const DisjointBoxLayout*>(&base_layout);
-      if(dis_box_ptr == NULL)
-      {
-        MayDay::Error("program.cpp: tagCells:logic error 4586");
-      }
-      DataIterator dit = dis_box_ptr->dataIterator();
+      std::cout << base_layout << std::endl;
+      // const DisjointBoxLayout* dis_box_ptr = dynamic_cast<const DisjointBoxLayout*>(&base_layout);
+      // if(dis_box_ptr == nullptr)
+      // {
+      //   MayDay::Error("program.cpp: tagCells:logic error 4586");
+      // }
+      // DataIterator dit = dis_box_ptr->dataIterator();
+      DataIterator dit = base_layout.dataIterator();
       for(int ibox = 0; ibox < dit.size(); ibox++)
       {
         DenseIntVectSet& box_dense_ivs = level_tag_ldivs[dit[ibox]];
-        Box  valid_box                  = (*dis_box_ptr) [dit[ibox]];
+        // Box  valid_box                  = (*dis_box_ptr) [dit[ibox]];
+        Box  valid_box                  = base_layout[dit[ibox]];
         IntVectSet box_intersected_ivs  = vec_ivs_tags[ilev];
         box_intersected_ivs &= valid_box;
         box_dense_ivs.makeEmptyBits();
         for(IVSIterator ivsit(box_intersected_ivs); ivsit.ok(); ++ivsit)
         {
+          std::cout << "add tag" << ivsit() << std::endl;
           IntVect iv_tag = ivsit();
           box_dense_ivs |= iv_tag;
           retval = true;
@@ -115,19 +128,21 @@ main(int argc, char* argv[])
   RefCountedPtr<ComputationalGeometry> compgeom   = RefCountedPtr<ComputationalGeometry>(new RodPlaneProfile());
   RefCountedPtr<AmrMesh>               amr        = RefCountedPtr<AmrMesh>(new AmrMesh());
   RefCountedPtr<GeoCoarsener>          geocoarsen = RefCountedPtr<GeoCoarsener>(new GeoCoarsener());
-  ParmParse pp_amrmesh("AmrMesh");
-  Vector<Real> lo_corner, hi_corner;
-  pp_amrmesh.getarr( "lo_corner", lo_corner,0, SpaceDim);
-  pp_amrmesh.getarr( "hi_corner", hi_corner,0, SpaceDim);
-  RealVect center;
-  for(int idir = 0; idir < SpaceDim; idir++)
-  {
-    center[idir] = lo_corner[idir];
-  }
-  Real frac = 0.02;
-  Real radius = frac*(hi_corner[0]-lo_corner[0]);
+  // ParmParse pp_amrmesh("AmrMesh");
+  // Vector<Real> lo_corner, hi_corner;
+  // pp_amrmesh.getarr( "lo_corner", lo_corner,0, SpaceDim);
+  // pp_amrmesh.getarr( "hi_corner", hi_corner,0, SpaceDim);
+  // RealVect center;
+  // for(int idir = 0; idir < SpaceDim; idir++)
+  // {
+  //   center[idir] = lo_corner[idir] + (hi_corner[idir]-lo_corner[idir])/2;
+  // }
+  // center[0] = lo_corner[0];
+  // Real frac = 0.1;
+  // Real radius = frac*(hi_corner[0]-lo_corner[0]);
+  // //Real radius = 100;
 
-  CellTaggerAroundPoint* derived_ptr = new CellTaggerAroundPoint( amr, center, radius);
+  CellTaggerAroundPoint* derived_ptr = new CellTaggerAroundPoint( amr);
   CellTagger*               base_ptr = static_cast<CellTagger*>(derived_ptr);
   Vector<IntVectSet>         tags_level;
   derived_ptr->getTagsVector(tags_level);

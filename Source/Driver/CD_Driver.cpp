@@ -284,6 +284,58 @@ Driver::getGeometryTags()
     IntVectSet& geomTags = m_geomTags[lvl];
     geomTags.makeEmpty();
 
+
+    // HACK force in other tags
+    {
+      const DisjointBoxLayout& dbl = ebisGas->getGrids(curDomain);
+      const DataIterator&      dit = dbl.dataIterator();
+
+      Vector<Real>           m_dx = m_amr->getDx();
+      RealVect               m_origin = m_amr->getProbLo();
+      RealVect               m_center;
+      Real                   m_manhattan_radius;
+      ParmParse pp_amrmesh("AmrMesh");
+      Vector<Real> cent;
+      pp_amrmesh.getarr("fixed_tag_center", cent, 0, SpaceDim);
+      for (int d=0; d!=SpaceDim; d++) {m_center[d] = cent[d];}
+      pp_amrmesh.get("fixed_tag_radius", m_manhattan_radius);
+
+      Real dx_lev = m_dx[lvl];
+      IntVect iv_cent;
+      Real r_min_rad = std::max(1.1*dx_lev, m_manhattan_radius);
+      // scale down with level for proper nesting
+      r_min_rad *= std::pow(0.9, lvl);
+
+      int i_radius = int(r_min_rad/dx_lev);
+      IntVect region_lo, region_hi;
+      for(int idir = 0; idir < SpaceDim; idir++)
+        {
+          Real center_dist = m_center[idir] - m_origin[idir];
+          iv_cent[idir] = int(center_dist/dx_lev);
+          region_lo[idir] = iv_cent[idir] - i_radius;
+          region_hi[idir] = iv_cent[idir] + i_radius;
+        }
+      Box tag_region(region_lo, region_hi);
+      std::cout << "tag region in geom tags" << tag_region << std::endl;
+
+      // apply tags
+      const int nbox = dit.size();
+#pragma omp parallel for schedule(runtime)
+      for (int mybox = 0; mybox < nbox; mybox++) {
+        const DataIndex& din = dit[mybox];
+        Box validBox = dbl[din];
+
+        auto kernel = [&](const IntVect& iv) -> void {
+          if (tag_region.contains(iv))
+          {
+            geomTags |= iv;
+          }
+        };
+
+        BoxLoops::loop(validBox, kernel);
+      }
+    }
+
     // Evaluate angles between cut-cells and refine based on that.
     // Need one ghost cell because we fetch normal vectors from neighboring cut-cells.
     DisjointBoxLayout irregGrids = ebisGas->getIrregGrids(curDomain);
@@ -335,6 +387,13 @@ Driver::getGeometryTags()
             }
           }
         }
+        // Box inBox(IntVect(-12,20), IntVect(12,44));
+        // // if (inBox.contains(iv))
+        // if (iv[0] < 64)
+        //   {
+        //     geomTags |= iv;
+        //   }
+        // // pout() << iv << geomTags << std::endl;
       };
 
       BoxLoops::loop(vofit, kernel);
