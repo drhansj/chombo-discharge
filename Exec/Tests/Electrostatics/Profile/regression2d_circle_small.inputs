@@ -25,9 +25,9 @@ AmrMesh.centroid_sten   = linear      # Centroid interp stencils. 'pwl', 'linear
 AmrMesh.eb_sten         = pwl         # EB interp stencils. 'pwl', 'linear', 'taylor, 'lsq'
 AmrMesh.redist_radius   = 1           # Redistribution radius for hyperbolic conservation laws
 
-AmrMesh.fixed_tag_center = 0. 0.01
-AmrMesh.fixed_tag_radius = 0.002 # sized for single box on level 1
-# AmrMesh.fixed_tag_radius = 0.004 # sized for 4 boxes on level 1
+AmrMesh.fixed_tag_center = 0. 0.015
+AmrMesh.fixed_tag_radius = 0.002 # sized for single box on level 1 (WORKS)
+#AmrMesh.fixed_tag_radius = 0.004 # sized for 4 boxes on level 1 (BREAKS)
 # ====================================================================================================
 # DRIVER OPTIONS
 # ====================================================================================================
