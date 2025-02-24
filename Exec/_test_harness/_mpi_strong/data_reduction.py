@@ -53,45 +53,22 @@ parser.add_argument('--max_lev_max', type=int, help='maximum testing max level (
 
 
 args = parser.parse_args()
-data_directory   =           "_mpi_strong_12_19_2024"
-summary_file_name= "summary_of_mpi_strong_12_19_2024.tex"
+home_str = os.getcwd();
+print ("home_str = " + home_str)
+
+driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
+input_template = home_str + "/../_input_templates/regression2d_circle.inputs"
+i_dim          = 2
+example_prefix = "regression_2d_circle"
+i_cur_example = 0
+data_directory   =           "_mpi_strong_2_21_2025"
+summary_file_name= "summary_of_" + data_directory + ".tex"
 print(args)
 home_str = os.getcwd();
 print ("homedir = " + home_str)
 today_str =str(today.month) + "_" + str(today.day) + "_" + str(today.year)
 
 
-#This is just an ordered list of directory/input file/prefix/dim combinations
-i_cur_example = 0
-
-driver_dir     = "4586"
-i_dim          =  4586
-i_found        =  0
-
-if(i_cur_example == 0):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    i_dim          = 2
-    example_prefix = "tests_profile_circle"
-    i_found = 1
-elif(i_cur_example == 1):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    i_dim          = 2
-    example_prefix = "tests_profile_square"
-    i_found = 1
-elif(i_cur_example == 2):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    i_dim          = 3
-    example_prefix = "tests_profile_circle"
-    i_found = 1
-elif(i_cur_example == 3):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    i_dim          = 3
-    example_prefix = "tests_profile_square"
-    i_found = 1
-
-if(i_found == 0):
-    print("configure_strong_scaling: logic error")
-    exit()
 
 i_opt = 1
 i_deb = 1
@@ -160,7 +137,7 @@ while i_max_lev <= args.max_lev_max:
                     bot_solver_type = "gmres"
                     bot_solver_label = "gmrs"
 
-                mpi_directory = runs_directory + "/_" + str(i_num_proc)  + "_procs_" + use_eb_str + "_botsolve_" + bot_solver_type
+                mpi_directory = runs_directory + "/_" + str(i_num_proc)  + "_procs_" + use_eb_str 
                 
                 print("runs_directory  = " + runs_directory)
                 print("mpi_directory  = "  + mpi_directory)

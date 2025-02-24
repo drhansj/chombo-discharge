@@ -28,7 +28,7 @@ else
     module unload petsc; module load petsc/serial;
 fi
 echo "make realclean" 
-make realclean;
+make $COM_OPTIONS realclean;
 
 echo "compile.sh:cd $CHOMBO_HOME ; make -j32 lib"
 cd $CHOMBO_HOME; make -j32 $COM_OPTIONS lib;

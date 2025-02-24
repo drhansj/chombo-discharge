@@ -102,41 +102,13 @@ batch_root = "batch_4586.sh"
 input_root = "4586.inputs"
 
 #This is just an ordered list of directory/input file/prefix/dim combinations
+
+# a relic from when I was more ambitious
+driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
+input_template = home_str + "/../_input_templates/regression2d_circle.inputs"
+i_dim          = 2
+example_prefix = "regression_2d_circle"
 i_cur_example = 0
-
-driver_dir     = "4586"
-input_template = "4586"
-i_dim          =  4586
-i_found        =  0
-
-if(i_cur_example == 0):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    input_template = home_str + "/../_input_templates/tests_profile_circle.input.template"
-    i_dim          = 2
-    example_prefix = "tests_profile_circle"
-    i_found = 1
-elif(i_cur_example == 1):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    input_template = home_str + "/../_input_templates/tests_profile_square.input.template"
-    i_dim          = 2
-    example_prefix = "tests_profile_square"
-    i_found = 1
-elif(i_cur_example == 2):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    input_template = home_str + "/../_input_templates/tests_profile_circle.input.template"
-    i_dim          = 3
-    example_prefix = "tests_profile_circle"
-    i_found = 1
-elif(i_cur_example == 3):
-    driver_dir     = home_str + "/../../Tests/Electrostatics/Profile"
-    input_template = home_str + "/../_input_templates/tests_profile_square.input.template"
-    i_dim          = 3
-    example_prefix = "tests_profile_square"
-    i_found = 1
-
-if(i_found == 0):
-    print("configure_strong_scaling: logic error")
-    exit()
 
 print("driver_dir    [" + str(i_cur_example)  +  "] = " + driver_dir)
 print("batch_template[" + str(i_cur_example)  +  "] = " + batch_template)
