@@ -11,7 +11,7 @@
 AmrMesh.lo_corner        = -.500 -.750 -.500  # Low corner of problem domain
 AmrMesh.hi_corner        =  .500  .750  .500  # High corner of problem domain
 AmrMesh.verbosity        = -1          # Controls verbosity.
-AmrMesh.coarsest_domain  = 32 48 32
+AmrMesh.coarsest_domain  = 64 96 64
 
 #
 AmrMesh.max_amr_depth    = 4           # Maximum amr depth
@@ -40,7 +40,7 @@ AmrMesh.redist_radius    = 1           # Redistribution radius for hyperbolic co
 # ====================================================================================================
 Driver.verbosity                       = 2                # Engine verbosity
 Driver.geometry_generation             = chombo-discharge # Grid generation method, 'chombo-discharge' or 'chombo'
-Driver.geometry_scan_level             = 1                # Geometry scan level for chombo-discharge geometry generator
+Driver.geometry_scan_level             = 0                # Geometry scan level for chombo-discharge geometry generator
 Driver.ebis_memory_load_balance        = false            # If using Chombo geo-gen, use memory as loads for EBIS generation  
 Driver.output_dt                       = -1.0             # Output interval (values <= 0 enforces step-based output)
 Driver.plot_interval                   = 10               # Plot interval
@@ -91,7 +91,7 @@ FieldSolverMultigrid.jump_bc           = natural           # Jump BC type ('natu
 FieldSolverMultigrid.bc.x.lo           = neumann 0.0     # Bc type (see docs)
 FieldSolverMultigrid.bc.x.hi           = neumann 0.0     # Bc type (see docs)
 FieldSolverMultigrid.bc.y.lo           = dirichlet 1.0     # Bc type (see docs)
-FieldSolverMultigrid.bc.y.hi           = dirichlet   0.0     # Bc type (see docs)
+FieldSolverMultigrid.bc.y.hi           = dirichlet 0.0     # Bc type (see docs)
 FieldSolverMultigrid.bc.z.lo           = neumann 0.0     # Bc type (see docs)
 FieldSolverMultigrid.bc.z.hi           = neumann   0.0     # Bc type (see docs)
 FieldSolverMultigrid.plt_vars          = phi rho E         # Plot variables: 'phi', 'rho', 'E', 'res', 'perm', 'sigma', 'Esol'
