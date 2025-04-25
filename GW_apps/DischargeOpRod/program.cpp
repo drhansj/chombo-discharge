@@ -5,10 +5,13 @@
 #include <CD_DischargeInceptionTagger.H>
 #include <CD_LookupTable.H>
 #include <CD_DataParser.H>
+#include <CD_FieldStepper.H>
+#include <CD_FieldSolverMultigrid.H>
 #include <ParmParse.H>
 
 using namespace ChomboDischarge;
 using namespace Physics::DischargeInception;
+using namespace Physics::Electrostatics;
 
 int
 main(int argc, char* argv[])
@@ -164,7 +167,9 @@ main(int argc, char* argv[])
   };
 
   // Set up time stepper
+#if 0
   auto timestepper = RefCountedPtr<DischargeInceptionStepper<>>(new DischargeInceptionStepper<>());
+
   auto celltagger  = RefCountedPtr<DischargeInceptionTagger>(
     new DischargeInceptionTagger(amr, timestepper->getElectricField(), alphaEff));
 
@@ -179,6 +184,11 @@ main(int argc, char* argv[])
   timestepper->setVoltageCurve(voltageCurve);
   timestepper->setFieldEmission(fieldEmission);
   timestepper->setSecondaryEmission(secondaryEmission);
+
+#else
+  auto timestepper = RefCountedPtr<FieldStepper<FieldSolverMultigrid>>(new FieldStepper<FieldSolverMultigrid>());
+  auto celltagger = RefCountedPtr<CellTagger>(nullptr);
+#endif    
 
   // Set up the Driver and run it
   RefCountedPtr<Driver> engine = RefCountedPtr<Driver>(new Driver(compgeom, timestepper, amr, celltagger));

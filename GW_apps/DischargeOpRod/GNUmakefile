@@ -12,7 +12,10 @@ $(ebaseobject): dependencies
 dependencies: 
 	$(MAKE) --directory=$(DISCHARGE_HOME) discharge-lib
 	$(MAKE) --directory=$(DISCHARGE_HOME) dischargeinception
+	$(MAKE) --directory=$(DISCHARGE_HOME) electrostatics
 
 # Make advection-diffusion headers and library visible. 
 XTRACPPFLAGS += $(DISCHARGEINCEPTION_INCLUDE)
 XTRALIBFLAGS += $(addprefix -l, $(DISCHARGEINCEPTION_LIB))$(config)
+XTRACPPFLAGS += $(ELECTROSTATICS_INCLUDE)
+XTRALIBFLAGS += $(addprefix -l, $(ELECTROSTATICS_LIB))$(config)
