@@ -167,7 +167,7 @@ main(int argc, char* argv[])
   };
 
   // Set up time stepper
-#if 0
+#if 1
   auto timestepper = RefCountedPtr<DischargeInceptionStepper<>>(new DischargeInceptionStepper<>());
 
   auto celltagger  = RefCountedPtr<DischargeInceptionTagger>(
