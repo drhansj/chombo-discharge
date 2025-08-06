@@ -122,7 +122,6 @@ namespace Physics {
       m_sigma->setTime(0, 0.0, 0.0);
       m_sigma->setVerbosity(m_verbosity);
     }
-
     template <class T>
     void
     FieldStepper<T>::registerOperators()
