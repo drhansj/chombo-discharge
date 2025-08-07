@@ -28,9 +28,9 @@ DoubleStl::DoubleStl()
 {
   this->setGasPermittivity(1.0);
 
-  ParmParse pp1("DoubleStl.stl1");
-  ParmParse pp2("DoubleStl.stl2");
-  ParmParse pp3("DoubleStl.stl3");
+  //ParmParse pp1("DoubleStl.stl1");
+  //ParmParse pp2("DoubleStl.stl2");
+  //ParmParse pp3("DoubleStl.stl3");
   ParmParse ppC("DoubleStl.cylinder");
   ParmParse ppC2("DoubleStl.cylinder2");
   ParmParse ppC3("DoubleStl.cylinder3");
